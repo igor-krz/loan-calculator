@@ -1,10 +1,17 @@
 // Listen for submit
-document
-  .getElementById('loan-form')
-  .addEventListener('submit', calculateResults);
+document.getElementById('loan-form').addEventListener('submit', function (e) {
+  // Hide results
+  document.getElementById('results').style.display = 'none';
+  // Show Loader
+  document.getElementById('loading').style.display = 'block';
+
+  setTimeout(calculateResults, 2000);
+
+  e.preventDefault();
+});
 
 // Calculate Results
-function calculateResults(e) {
+function calculateResults() {
   console.log('Calculating');
   // UI variables
   const amount = document.getElementById('amount');
@@ -25,38 +32,47 @@ function calculateResults(e) {
   if (isFinite(monthly)) {
     monthlyPayment.value = monthly.toFixed(2);
     totalPayment.value = (monthly * calculatedPayments).toFixed(2);
-    totalInterest.value = ((monthly * calculatedPayments) - principal).toFixed(2);
-  } else {
-    showError('Please check your numbers')
-  }
+    totalInterest.value = (monthly * calculatedPayments - principal).toFixed(2);
 
-  e.preventDefault();
+    // Show results
+    document.getElementById('results').style.display = 'block';
+
+    // Hide Loader
+    document.getElementById('loading').style.display = 'none';
+  } else {
+    showError('Please check your numbers');
+  }
 }
 
 // Show Error
 
 function showError(error) {
-    // Create a div
-    const errorDiv = document.createElement('div');
+  // Hide results
+  document.getElementById('results').style.display = 'none';
 
-    // Get elements
-    const card = document.querySelector('.card');
-    const heading = document.querySelector('.heading');
+  // Hide Loader
+  document.getElementById('loading').style.display = 'none';
+  // Create a div
+  const errorDiv = document.createElement('div');
 
-    // Add a class
-    errorDiv.className = 'alert alert-danger';
+  // Get elements
+  const card = document.querySelector('.card');
+  const heading = document.querySelector('.heading');
 
-    // Create text node and append to div
-    errorDiv.appendChild(document.createTextNode(error));
+  // Add a class
+  errorDiv.className = 'alert alert-danger';
 
-    // Insert error above heading
-    card.insertBefore(errorDiv, heading);
+  // Create text node and append to div
+  errorDiv.appendChild(document.createTextNode(error));
 
-    // Clear error after 3 seconds
-    setTimeout(clearError, 3000);
+  // Insert error above heading
+  card.insertBefore(errorDiv, heading);
+
+  // Clear error after 3 seconds
+  setTimeout(clearError, 3000);
 }
 
 // Clear error
 function clearError() {
-    document.querySelector('.alert').remove();
+  document.querySelector('.alert').remove();
 }
